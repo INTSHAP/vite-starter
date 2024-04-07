@@ -3,23 +3,24 @@
 import { useForm } from "react-hook-form";
 import { FormInputField } from "../../ui/form-components/form-field";
 import { Button } from "../../ui/button";
-import { LoginFormData } from "../../../types/auth/login.types";
+import { LoginData } from "../../../types/auth/login.types";
 import { login_validation_schema } from "../../../schemas/authentication/login.schema";
-import { toast } from "sonner";
 import Form from "../../ui/form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useLoginUser } from "../../../services/auth.hooks";
 
 export default function LoginForm() {
+  const { mutate, isPending } = useLoginUser();
   const {
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isValid },
     register,
     handleSubmit,
-  } = useForm<LoginFormData>({
+  } = useForm<LoginData>({
     resolver: yupResolver(login_validation_schema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
+  const onSubmit = async (data: LoginData) => {
+    mutate(data);
   };
 
   return (
@@ -45,7 +46,7 @@ export default function LoginForm() {
         type="submit"
         variant={!isValid ? "secondary" : "default"}
         className="w-full"
-        // disabled={isSubmitting}
+        disabled={isPending}
       />
     </Form>
   );

@@ -5,39 +5,30 @@ import { FormInputField } from "../../ui/form-components/form-field";
 import { Button } from "../../ui/button";
 import { signup_validation_schema } from "../../../schemas/authentication/signup.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "sonner";
 import { SignupFormData } from "../../../types/auth/signup.types";
 import Form from "../../ui/form";
+import { useRegisterUser } from "../../../services/auth.hooks";
 
 export default function SignupForm() {
+  const { mutate, isPending } = useRegisterUser();
   const {
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isValid },
     register,
     handleSubmit,
   } = useForm<SignupFormData>({
     resolver: yupResolver(signup_validation_schema),
   });
 
-  // const onSubmit = async (data: SignupFormData) => {
-  //   try {
-  //     await signIn("credentials", data);
-  //     toast.success(`logging ${data.email} ...`);
-  //   } catch (error) {
-  //     if (error instanceof AuthError) {
-  //       switch (error.type) {
-  //         case "CredentialsSignin":
-  //           // return "Invalid credentials.";
-  //           toast.success("Invalid credentials.");
-  //         default:
-  //           // return "Something went wrong.";
-  //           toast.success("Something went wrong.");
-  //       }
-  //     }
-  //     throw error;
-  //   }
-  // };
+  const onSubmit = async (data: SignupFormData) => {
+    mutate({
+      email: data.email,
+      password: data.password,
+      name: data.firstname + data.lastname,
+    });
+  };
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <FormInputField
         name="firstname"
         label="First name"
@@ -83,7 +74,7 @@ export default function SignupForm() {
         type="submit"
         variant={!isValid ? "secondary" : "default"}
         className="w-full"
-        disabled={isSubmitting || !isValid}
+        disabled={isPending}
       />
     </Form>
   );
