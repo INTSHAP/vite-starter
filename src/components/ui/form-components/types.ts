@@ -7,12 +7,12 @@ export type FormData = {
   lastName: string;
 };
 
-export interface FormFieldProps
+export interface FormFieldProps<T extends FieldValues>
   extends React.InputHTMLAttributes<HTMLInputElement> {
   name: ValidFieldNames;
   type: ValidFieldTypes;
   valueAsNumber?: boolean;
-  register: any;
+  register: UseFormRegister<T>;
   error: FieldError;
   placeholder: string;
   label: string;
