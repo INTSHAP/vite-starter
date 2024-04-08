@@ -1,18 +1,27 @@
-import { FieldError, FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
 
 export type FormData = {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
+  confirmPassword: string;
 };
 
-export interface FormFieldProps<T extends FieldValues>
+export type LoginFormData = {
+  email: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  confirmPassword: string;
+};
+
+export interface FormFieldProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   name: ValidFieldNames;
   type: ValidFieldTypes;
   valueAsNumber?: boolean;
-  register: UseFormRegister<T>;
+  register: UseFormRegister<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   error: FieldError;
   placeholder: string;
   label: string;
